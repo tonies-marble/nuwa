@@ -16,10 +16,18 @@ manifest:
   # If two projects have the same name, the project defined first has highest precedence.
   # Please add items below based on alphabetical order
   projects:
+    - name: ameba-rtos
+      path: modules/hal/ameba-rtos
+      # Vendor SDK; donor of the prebuilt per-core WiFi libraries
+      # (lib_wifi_whc_np/lib_coex on KM4, lib_wifi_fw on KM0).  Master is the
+      # v1.3.0 generation matching the nuwa_lib CA32 host blobs -- the WHC IPC
+      # shared structs are not ABI-stable across SDK generations.
+      revision: c722e035bbb274a3c275a9b3bc42d45a7497a41a
+      clone-depth: 1
     - name: hal_realtek
       repo-path: nuwa_hal_realtek
       path: modules/hal/realtek
-      revision: 90b52a3c03ae8f93a8fc4a93720e0921121a6138
+      revision: 3c9fca01bc17919b72d6e2998f8602f0f5e67ff5
       west-commands: west/west-commands.yml
     - name: nuwa_lib
       path: modules/hal/realtek/zephyr/blobs/ameba
@@ -31,36 +39,28 @@ manifest:
       path: modules/tee/tf-m/trusted-firmware-m
       repo-path: nuwa-trusted-firmware-m
       revision: ef046601f6e448e4310c5a33f4f404150a801db4
-    - name: psa-arch-tests
-      path: modules/tee/tf-m/psa-arch-tests
-      repo-path: nuwa-psa-arch-tests
-      revision: 5677c9e7254485fed935c28b784217e1bcd46395
     - name: tf-a
       path: modules/tee/tf-a/trusted-firmware-a
       repo-path: nuwa-trusted-firmware-a
       revision: 3d6135cabf5d839cc197272469263f395c55079b
-    - name: lvgl
-      path: modules/lib/gui/lvgl
-      repo-path: lvgl-zephyr
-      revision: 4bf24d50859c45415813deece82d97b192820466
     - name: nuwa_tools
       path: tools
       revision: 98da336c57729ddfc42bf98c301520176011e6da
     - name: zephyr
       path: zephyr
       # west-commands: scripts/west-commands.yml
-      revision: f33ec3dc6b9737236e8f8edfcd9e49f4378321b7
+      revision: fbb28551ff35e4122ea5f7b3b3664ee94eeab06c
       import:
         name-allowlist:
           - cmsis
           - cmsis_6
-          - littlefs
-          - fatfs
           - mbedtls
           - mbedtls-3.6
           - zcbor
-          - tf-m-tests
           - tf-psa-crypto
+          # OpenAMP + libmetal: A32<->KM4 inter-core rpmsg communication
+          - open-amp
+          - libmetal
 
 # The available self keys are path/west-commands/import, and all items are optional.
 # If path is not given, the basename of the path component in the manifest repository URL(by west init -m) will be used by default.
